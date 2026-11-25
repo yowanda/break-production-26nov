@@ -15,11 +15,15 @@ LINE = (
 
 
 def main() -> None:
+    # Gate: entry text must be 1-200 chars, not only whitespace.
+    if not (1 <= len(LINE) <= 200) or not LINE.strip():
+        raise SystemExit("entry text fails 1-200 char gate")
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(LINE + "\n")
+    # Deterministic byte-exact write: UTF-8 bytes, LF, trailing newline.
+    with open(path, "wb") as f:
+        f.write((LINE + "\n").encode("utf-8"))
 
 
 if __name__ == "__main__":
